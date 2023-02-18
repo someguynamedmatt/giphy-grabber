@@ -23,13 +23,13 @@ export default function Home({ gifs }) {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <GiphyHead />
-      <GifContext.Provider>
+      <GifContext.Provider initialState={gifs}>
         <main>
           <Header />
           <SearchBar />
           <SearchHistory />
           <ResultsCallout />
-          <GifGrid {...{ gifs }} />
+          <GifGrid />
         </main>
       </GifContext.Provider>
     </ThemeProvider>
@@ -51,5 +51,5 @@ Home.getInitialProps = async ctx => {
   }
   const fetchResponse = await fetch(url)
   const gifs = await fetchResponse.json()
-  return normalizeGiphyResponse(gifs)
+  return { gifs: normalizeGiphyResponse(gifs) }
 }

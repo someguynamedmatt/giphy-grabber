@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { usePersistence } from '../hooks'
+import { normalizeGiphyResponse } from '@/utils'
 
 const HISTORY_KEY = '@gif::history'
 
-const useGifs = () => {
+const useGifs = (initialState = []) => {
   const { setInLocalStorage, getFromLocalStorage } = usePersistence()
-  const [gifs, setGifs] = useState([])
+  const [gifs, setGifs] = useState(initialState)
   const [searchTerm, setSearchTerm] = useState('trending')
   const searchHistory = useRef([])
 
@@ -23,8 +24,9 @@ const useGifs = () => {
     setGifs(gifs)
   }
 
+  // TODO break this apart into more explicit fns; e.g. fetchTrendingGifs, fetchWithQuery, etc.
   const fetchGifs = async query => {
-    const res = await fetch(query ? `/api/gifs?q=${query}` : `/api/gifs`)
+    const res = await fetch(query && query !== 'trending' ? `/api/gifs?q=${query}` : `/api/gifs`)
     const data = await res.json()
     if (query) {
       setSearchTerm(query)
@@ -44,8 +46,8 @@ const useGifs = () => {
 
   return {
     currentSearchTerm: searchTerm,
-    gifFetcher: fetchGifs,
-    gifs,
+    gifFetch: fetchGifs,
+    gifs: gifs,
     searchHistory: searchHistory.current,
     setGifs: setGifsForContext,
     setSearchHistory: setHistory,

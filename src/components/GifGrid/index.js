@@ -3,26 +3,32 @@ import { findDOMNode } from 'react-dom'
 import { Grid } from './styles'
 import { Gif } from '@/components'
 import { GifContext } from '@/providers'
+import { useIntersection } from 'react-use'
 
-const GifGrid = ({ gifs: trendingGifs }) => {
-  const {
-    gifs: { gifs: searchedGifs },
-  } = GifContext.useContainer()
-  const [displayableGifs, setDisplayableGifs] = useState(
-    searchedGifs?.length ? searchedGifs : trendingGifs
-  )
+const GifGrid = () => {
+  const { gifs, gifFetch, currentSearchTerm, setGifs } = GifContext.useContainer()
+
+  const ref = useRef(null)
+  const intersection = useIntersection(ref, { root: null, rootMargin: '0px', threshold: 1 })
 
   useEffect(() => {
-    if (searchedGifs?.length) {
-      setDisplayableGifs(searchedGifs)
+    const fn = async () => {
+      if (intersection?.intersectionRatio) {
+        const newBatch = await gifFetch(currentSearchTerm)
+        if (newBatch?.length) {
+          setGifs([...gifs, ...newBatch])
+        }
+      }
     }
-  }, [searchedGifs])
+    fn()
+  }, [intersection?.intersectionRatio])
 
   return (
     <Grid data-testid='grid-instance'>
-      {displayableGifs.map(gif => (
+      {gifs?.map(gif => (
         <Gif key={gif.id} gif={gif} />
       ))}
+      <div ref={ref} />
     </Grid>
   )
 }
