@@ -8,50 +8,65 @@ const HISTORY_KEY = '@gif::history'
 const useGifs = (initialState = []) => {
   const { setInLocalStorage, getFromLocalStorage } = usePersistence()
   const [gifs, setGifs] = useState(initialState)
-  const [searchTerm, setSearchTerm] = useState('trending')
+  const [searchTerm, setSearchTerm] = useState()
   const searchHistory = useRef([])
 
   useEffect(() => {
-    searchHistory.current = Array.from(new Set([...(getFromLocalStorage(HISTORY_KEY) ?? [])]))
+    const fromLS = getFromLocalStorage(HISTORY_KEY)
+    searchHistory.current = Array.from(new Set([...(Array.isArray(fromLS) ? fromLS : [fromLS])]))
+    /* searchHistory.current = Array.from(
+     *   new Set([query, ...(Array.isArray(previousHistory) ? previousHistory : [previousHistory])])
+     * ) */
   }, [])
 
-  useEffect(() => {
-    let previousHistory = getFromLocalStorage(HISTORY_KEY) ?? []
-    setInLocalStorage(HISTORY_KEY, Array.from(new Set([...previousHistory, searchTerm])))
-  }, [searchHistory.current.length])
-
+  /* useEffect(() => {
+   *   let previousHistory = getFromLocalStorage(HISTORY_KEY) ?? []
+   *   setInLocalStorage(HISTORY_KEY, Array.from(new Set([...previousHistory, searchTerm])))
+   * }, [searchHistory.current.length])
+   */
   const setGifsForContext = gifs => {
+    console.log('GIFSforContext', gifs.length)
     setGifs(gifs)
   }
 
-  // TODO break this apart into more explicit fns; e.g. fetchTrendingGifs, fetchWithQuery, etc.
-  const fetchGifs = async query => {
-    const res = await fetch(query && query !== 'trending' ? `/api/gifs?q=${query}` : `/api/gifs`)
+  const fetchGifs = async url => {
+    const res = await fetch(url)
     const data = await res.json()
-    if (query) {
-      setSearchTerm(query)
-      setHistory(query)
-    }
     setGifs(data)
     return data
+  }
+
+  const fetchWithQuery = async ({ query, page } = { page: 0 }) => {
+    if (!page) setGifs([])
+    setSearchTerm(query)
+    return await fetchGifs(`/api/gifs?q=${query}&page=${page}`)
+  }
+
+  const fetchTrending = async ({ page } = { page: 0 }) => {
+    return await fetchGifs(`/api/gifs?page=${page}`)
   }
 
   // TODO CLEAN THIS UP
   const setHistory = query => {
     if (!query) return
     let previousHistory = getFromLocalStorage(HISTORY_KEY) ?? []
-    searchHistory.current = Array.from(new Set([...previousHistory, query]))
+    console.log('prev', previousHistory)
+    searchHistory.current = Array.from(
+      new Set([query, ...(Array.isArray(previousHistory) ? previousHistory : [previousHistory])])
+    )
+    setInLocalStorage(HISTORY_KEY, query)
     setSearchTerm(searchTerm)
   }
 
   return {
-    currentSearchTerm: searchTerm,
-    gifFetch: fetchGifs,
-    gifs: gifs,
+    fetchTrending,
+    fetchWithQuery,
+    gifs,
     searchHistory: searchHistory.current,
+    searchTerm,
     setGifs: setGifsForContext,
-    setSearchHistory: setHistory,
     setSearchTerm,
+    setHistory,
   }
 }
 

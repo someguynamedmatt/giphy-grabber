@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const { q, page } = req.query
     url = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${
       page ?? 0
-    }&limit=20&rating=g&lang=en`
+    }&limit=25&rating=g&lang=en`
   }
   const data = await fetch(url)
   const rawGiphyResponse = await data.json()

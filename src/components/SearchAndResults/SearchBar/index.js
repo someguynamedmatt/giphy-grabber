@@ -14,40 +14,35 @@ const SearchBar = () => {
   const [inputValue, setInputValue] = useState(undefined)
   const [debouncedValue, setDebouncedValue] = useState('')
   const [data, setData] = useState(null)
-  const { gifFetch, setGifs, setSearchHistory, setSearchTerm, searchTerm } =
-    GifContext.useContainer()
+  const { fetchTrending, fetchWithQuery, setGifs, setHistory } = GifContext.useContainer()
 
   // useDebounce(() => setDebouncedValue(inputValue), DEBOUNCE_MS, [inputValue])
-
-  const fetchGifs = async () => {
-    const data = await gifFetch(inputValue)
-    setData(data)
-    setGifs(data)
-    setInputValue(inputValue)
-  }
 
   const onChange = ({ target: { value } }) => {
     setInputValue(value)
   }
 
   const searchClickHandler = () => {
-    fetchGifs(inputValue)
+    fetchWithQuery({ query: inputValue })
+    setHistory(inputValue)
   }
 
   const onKeydown = event => {
     if (event.code === 'Enter' || event.code === 'NumpadEnter') {
       event.preventDefault()
-      fetchGifs(inputValue)
+      console.log('FETCHIGN WITH QUERY')
+      fetchWithQuery({ query: inputValue })
+      setHistory(inputValue)
     }
   }
 
   useEffect(() => {
-    fetchGifs()
+    fetchTrending()
   }, [])
 
   return (
     <Search data-testid={testId}>
-      <Input value={searchTerm} placeholder='Search...' onChange={onChange} onKeyDown={onKeydown} />
+      <Input value={inputValue} placeholder='Search...' onChange={onChange} onKeyDown={onKeydown} />
       <Image
         onClick={searchClickHandler}
         src={'/giphy_grabber_search_icon.webp'}
