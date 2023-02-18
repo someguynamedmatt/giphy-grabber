@@ -1,12 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { ThemeProvider } from 'styled-components'
 import { GifGrid, Header, SearchBar, SearchHistory, ResultsCallout } from '@/components'
-import { GlobalStyles } from '@/styles/global.styles'
+import { GlobalStyles, theme } from '@/styles/global.styles'
 import { GifContext } from '@/providers'
 import { normalizeGiphyResponse } from '@/utils'
-
-const GIPHY_API_KEY = process.env.NEXT_PUBLIC_GIPHY_API_KEY
-const GIPHY_API_BASE = 'https://api.giphy.com/v1/gifs'
+import { GIPHY_API_BASE, GIPHY_API_KEY } from '@/constants'
 
 // TODO move?
 const GiphyHead = () => (
@@ -21,7 +20,7 @@ const GiphyHead = () => (
 
 export default function Home({ gifs }) {
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <GlobalStyles />
       <GiphyHead />
       <GifContext.Provider>
@@ -30,10 +29,10 @@ export default function Home({ gifs }) {
           <SearchBar />
           <SearchHistory />
           <ResultsCallout />
-          <GifGrid gifs={gifs} />
+          <GifGrid {...{ gifs }} />
         </main>
       </GifContext.Provider>
-    </>
+    </ThemeProvider>
   )
 }
 

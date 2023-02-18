@@ -4,7 +4,9 @@ import { useDebounce } from 'react-use'
 import Image from 'next/image'
 /* OURS */
 import { GifContext } from '@/providers'
-import { Body, Input } from './styles'
+import { Search, Input } from './styles'
+
+export const testId = 'searchbar-instance'
 
 const DEBOUNCE_MS = process.env.DEBOUNCE_MS || 500
 
@@ -37,7 +39,7 @@ const SearchBar = () => {
   }, [])
 
   return (
-    <Body>
+    <Search data-testid={testId}>
       <Input value={searchTerm} placeholder='Search...' onChange={onChange} />
       <Image
         onClick={searchClickHandler}
@@ -46,7 +48,7 @@ const SearchBar = () => {
         height={52}
         width={52}
       />
-    </Body>
+    </Search>
   )
 }
 

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { styles } from '@/styles/global.styles'
 
 export const HeaderBody = styled.div`
   top: 12px;
@@ -8,7 +7,7 @@ export const HeaderBody = styled.div`
   text-align: left;
   font: normal normal 900 28px/34px Lato;
   letter-spacing: 0px;
-  color: ${styles.color.white};
+  color: ${p => p.theme.color.white};
   text-transform: uppercase;
   opacity: 1;
 

@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
-export const styles = {
+export const theme = {
   color: {
     black: '#000000',
     charcoal: '#3B3B3B',
@@ -18,12 +18,12 @@ export const styles = {
 export const GlobalStyles = createGlobalStyle`
 html {
   font-family: 'Lato', sans-serif;
-  background-color: ${styles.color.black};
+  background-color: ${theme.color.black};
 }
 
 main {
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 800px;
   padding: 0 120px;
 }
 

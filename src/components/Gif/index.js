@@ -29,7 +29,7 @@ const GifComponent = ({ gif }) => {
     calculateGifSize()
   }, [calculateGifSize])
 
-  return <Gif ref={ref} data-testid='gif-instance' height={gifHeight} url={url} />
+  return <Gif ref={ref} data-testid='gif-instance' height={parseInt(gifHeight)} url={url} />
 }
 
 export default GifComponent

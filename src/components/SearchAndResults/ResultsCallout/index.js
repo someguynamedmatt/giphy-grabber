@@ -1,12 +1,14 @@
-import { Body } from './styles'
+import { Results } from './styles'
 import { GifContext } from '@/providers'
+
+export const testId = 'resultsCallout-instance'
 
 export const ResultsCallout = () => {
   const { currentSearchTerm } = GifContext.useContainer()
   return (
-    <Body>
+    <Results data-testid={testId}>
       Showing results for:&nbsp;<b>{currentSearchTerm || 'trending'}</b>
-    </Body>
+    </Results>
   )
 }
 

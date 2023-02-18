@@ -1,30 +1,32 @@
-import { Body, PreviousSearches, PreviousSearchesText } from './styles'
+import { SearchHistory, PreviousSearches, PreviousSearchesText } from './styles'
 import { GifContext } from '@/providers'
 
-const SearchHistory = () => {
+const SearchHistoryComponent = () => {
   const { searchHistory, gifFetcher } = GifContext.useContainer()
 
   const historyClickHandler = ({ currentTarget }) => {
-    console.log('Click', currentTarget.innerText)
     gifFetcher(currentTarget.innerText)
   }
 
+  // TODO BUG: there's a bug where immediately-viewed histories disappear from the list
   return (
-    <Body>
+    <SearchHistory>
       <PreviousSearchesText>
         <span>Previous</span>
         <span>Searches:</span>
       </PreviousSearchesText>
       <PreviousSearches>
-        {searchHistory.map((prevSearch, index) => (
-          <div>
-            <span onClick={historyClickHandler}>{prevSearch}</span>
-            {index !== searchHistory.length - 1 && <span>{', '}</span>}
-          </div>
-        ))}
+        {searchHistory
+          .filter(i => i)
+          .map((prevSearch, index) => (
+            <div key={`${index}-${prevSearch}`}>
+              <span onClick={historyClickHandler}>{prevSearch}</span>
+              {index !== searchHistory.length - 1 && <span>{', '}</span>}
+            </div>
+          ))}
       </PreviousSearches>
-    </Body>
+    </SearchHistory>
   )
 }
 
-export default SearchHistory
+export default SearchHistoryComponent
