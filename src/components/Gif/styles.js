@@ -1,12 +1,13 @@
 import styled from 'styled-components'
 
-export const Gif = styled.div.attrs(p => ({
-  style: {
-    height: `${p.height}px`,
-  },
-}))`
-  display: inline-block;
-  width: 100%;
+export const GifWrapper = styled.div`
+  position: relative;
+  /* max-width: 200px; */
+`
+
+export const Gif = styled.div`
+  position: relative;
+  height: ${p => p.height}px;
   background: url(${p => p.url});
   background-repeat: no-repeat;
   background-size: 100% ${p => p.height}px;

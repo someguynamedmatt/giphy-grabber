@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef } from 'react'
-import { Gif } from './styles'
+import { Gif, GifWrapper } from './styles'
 
 const GifComponent = ({ gif }) => {
   const { height, width, url } = gif.images['fixed_width']
@@ -29,7 +29,17 @@ const GifComponent = ({ gif }) => {
     calculateGifSize()
   }, [calculateGifSize])
 
-  return <Gif ref={ref} data-testid='gif-instance' height={parseInt(gifHeight)} url={url} />
+  return (
+    <GifWrapper ref={ref} className='grid-item-wrapper'>
+      <Gif
+        className='grid-item'
+        data-testid='gif-instance'
+        height={gifHeight}
+        width={width}
+        url={url}
+      />
+    </GifWrapper>
+  )
 }
 
 export default GifComponent

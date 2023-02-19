@@ -23,7 +23,7 @@ html {
 
 main {
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 1280px;
   padding: 0 120px;
 }
 
