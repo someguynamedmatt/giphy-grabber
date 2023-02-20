@@ -34,9 +34,9 @@ const GifComponent = ({ gif }) => {
       <Gif
         className='grid-item'
         data-testid='gif-instance'
+        src={url}
         height={gifHeight}
         width={width}
-        url={url}
       />
     </GifWrapper>
   )
