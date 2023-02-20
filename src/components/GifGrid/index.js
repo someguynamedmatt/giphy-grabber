@@ -23,7 +23,7 @@ function resizeMasonryItem(item) {
 function waitForImages() {
   const allItems = document?.getElementsByClassName('grid-item-wrapper')
   const gridWrapper = document?.getElementsByClassName('grid-wrapper')[0]
-  const gridWrapperWidth = globalThis?.window.getComputedStyle(gridWrapper).width
+  const gridWrapperWidth = globalThis?.window?.getComputedStyle(gridWrapper).width
   for (var i = 0; i < allItems.length; i++) {
     resizeMasonryItem(allItems[i])
   }
@@ -43,17 +43,14 @@ const GifGrid = () => {
 
   useEffect(() => {
     if (globalThis?.window) {
-      globalThis.window.addEventListener('resize', waitForImages)
+      globalThis?.window.addEventListener('resize', waitForImages)
     }
-
-    return () => {
-      globalThis?.window.removeEventListener('resize', waitForImages)
-    }
-  }, [])
+    return () => globalThis?.window.removeEventListener('resize', waitForImages)
+  }, [globalThis?.window, waitForImages])
 
   useEffect(() => {
-    /* waitForImages() */
-  }, [])
+    /* if (globalThis?.window) waitForImages() */
+  }, [waitForImages])
 
   useEffect(() => {
     const fn = async () => {
@@ -71,7 +68,7 @@ const GifGrid = () => {
   }, [intersection?.intersectionRatio])
 
   return (
-    <GridWrapper ref={ref} tclassName='grid-wrapper'>
+    <GridWrapper ref={ref} className='grid-wrapper'>
       <Grid className='grid'>
         {gifs?.map(gif => (
           <Gif key={gif.id} gif={gif} />

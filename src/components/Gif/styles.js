@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 export const GifWrapper = styled.div`
   position: relative;
-  /* max-width: 200px; */
 `
 
 export const Gif = styled.div`
