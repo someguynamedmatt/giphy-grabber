@@ -1,29 +1,22 @@
 import { useCallback, useEffect, useState, useRef } from 'react'
-import { Gif, GifWrapper } from './styles'
+import { Gif, GifWrapper, Placeholder } from './styles'
+import { useThrottleFn } from 'react-use'
 
 const GifComponent = ({ gif }) => {
   const { height, width, url } = gif.images['fixed_width']
   const [gifHeight, setGifHeight] = useState(0)
-  const window = globalThis?.window
+  const [loaded, setLoaded] = useState(false)
   const ref = useRef(null)
 
   const calculateGifSize = useCallback(() => {
     const containerWidth = ref?.current?.clientWidth
     const ratio = width / height
     const neededContainerHeight = containerWidth / ratio
-
     setGifHeight(neededContainerHeight)
-  }, [width, height])
+    return neededContainerHeight
+  }, [width, height, ref?.current])
 
-  useEffect(() => {
-    if (!window) return
-
-    window.addEventListener('resize', calculateGifSize)
-
-    return () => {
-      window.removeEventListener('resize', calculateGifSize)
-    }
-  }, [calculateGifSize, window])
+  /* const gifHeight = useThrottleFn(calculateGifSize, 250, [width, height]) */
 
   useEffect(() => {
     calculateGifSize()
@@ -31,13 +24,18 @@ const GifComponent = ({ gif }) => {
 
   return (
     <GifWrapper ref={ref} className='grid-item-wrapper'>
-      <Gif
-        className='grid-item'
-        data-testid='gif-instance'
-        src={url}
-        height={gifHeight}
-        width={width}
-      />
+      {loaded ? (
+        <Gif
+          className='grid-item'
+          data-testid='gif-instance'
+          src={url}
+          height={gifHeight ?? height}
+          width={width}
+          onLoadingComplete={() => setLoaded(true)}
+        />
+      ) : (
+        <Placeholder className='grid-item' randomHeight={Math.random() * 340} />
+      )}
     </GifWrapper>
   )
 }
