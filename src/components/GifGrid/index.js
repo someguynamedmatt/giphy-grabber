@@ -1,24 +1,27 @@
-import { useRef, useEffect, useCallback, useState } from 'react'
-import { findDOMNode } from 'react-dom'
-import { Grid, GridWrapper } from './styles'
+import { useRef, useEffect, useCallback, useState, useMemo, createElement } from 'react'
+import { createPortal, findDOMNode } from 'react-dom'
+import { InfiniteScroll, Grid, GridWrapper } from './styles'
 import { Gif } from '@/components'
 import { GifContext } from '@/providers'
 import { useIntersection } from 'react-use'
 import { useDebounce } from 'react-use'
 
 const GifGrid = () => {
-  const { gifs, fetchWithQuery, currentSearchTerm, setGifs } = GifContext.useContainer()
-  const pageRef = useRef(1)
-  const ref = useRef(null)
-  const intersection = useIntersection(ref, { root: null, rootMargin: '0px', threshold: 0.5 })
+  const { gifs, fetchGifs, searchTerm } = GifContext.useContainer()
+  const flag = useRef(null)
+  const [startPointer, setStartPointer] = useState(null)
+  const intersection = useIntersection(flag, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 1.0,
+  })
   const { window, document } = globalThis
 
   const resizeMasonryItem = ({ item, rowGap, rowHeight }) => {
-    const rowSpan = Math.ceil(
-      (item.querySelector('.grid-item').getBoundingClientRect().height + rowGap) /
-        (rowHeight + rowGap)
-    )
-    item.style.gridRowEnd = `span ${rowSpan}`
+    const gridItemRect = item.querySelector('.grid-item').getBoundingClientRect()
+    const rowSpan = Math.ceil((gridItemRect.height + rowGap) / (rowHeight + rowGap))
+    item.style.gridRowEnd = `span ${rowSpan > 1 ? rowSpan : Math.ceil(gridItemRect.bottom)}`
+    return Math.ceil(gridItemRect.bottom)
   }
 
   const resizeAllMasonryItems = useCallback(() => {
@@ -32,38 +35,40 @@ const GifGrid = () => {
     }
   }, [document, window])
 
-  const fn = async () => {
-    if (intersection?.intersectionRatio) {
-      console.log('INTERSECTION')
-      pageRef.current += 1
-      const newBatch = await fetchWithQuery({ query: currentSearchTerm, page: pageRef.current })
-      console.log('INTERSECTION', newBatch)
-      if (newBatch?.length) {
-        setGifs([...gifs, ...newBatch])
-      }
+  const intersectionCb = () => {
+    if (intersection?.isIntersecting) {
+      fetchGifs({ query: searchTerm })
     }
   }
 
-  /* useDebounce(fn, 150, [fn]) */
+  useEffect(() => {
+    setStartPointer(gifs.length - 1)
+  }, [])
 
   useEffect(() => {
     if (window) {
       window.addEventListener('resize', resizeAllMasonryItems)
+      window.addEventListener('scroll', intersectionCb)
     }
-    return () => window.removeEventListener('resize', resizeAllMasonryItems)
-  }, [window, resizeAllMasonryItems])
+    return () => {
+      window.removeEventListener('resize', resizeAllMasonryItems)
+      window.removeEventListener('scroll', intersectionCb)
+    }
+  }, [window, resizeAllMasonryItems, intersectionCb])
 
   useEffect(() => {
     if (window) resizeAllMasonryItems()
-  }, [window, resizeAllMasonryItems])
+  }, [window, resizeAllMasonryItems, gifs.length])
 
   return (
-    <GridWrapper ref={ref} className='grid-wrapper'>
+    <GridWrapper className='grid-wrapper'>
       <Grid className='grid'>
-        {gifs?.map(gif => (
-          <Gif key={gif.id} gif={gif} />
-        ))}
-        <div ref={ref} />
+        <>
+          {gifs?.map(g => (
+            <Gif key={g?.id} gif={g} />
+          ))}
+          <InfiniteScroll ref={flag} />
+        </>
       </Grid>
     </GridWrapper>
   )

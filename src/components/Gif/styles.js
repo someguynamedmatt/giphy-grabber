@@ -3,6 +3,8 @@ import Image from 'next/image'
 
 export const GifWrapper = styled.div`
   position: relative;
+  height: max-content;
+  grid-row-end: ${p => p.bottom};
 `
 
 export const Gif = styled(Image)`

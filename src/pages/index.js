@@ -36,20 +36,15 @@ export default function Home({ gifs }) {
   )
 }
 
-// TODO this fetch logic is duplicated in gifs.js...consolidate
 Home.getInitialProps = async ctx => {
-  if (!GIPHY_API_KEY) {
-    return { gifs: [], error: { status: 401, message: 'GIPHY API Key is invalid/missing' } }
-  }
+  const { q, page } = ctx.req.query ?? {}
+  const trendingUrl = `${GIPHY_API_BASE}/trending?api_key=${GIPHY_API_KEY}&limit=25&rating=g`
+  const searchUrl = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${
+    page || 1
+  }&limit=20&rating=g&lang=en`
+  console.log('\n****GIP****\n\n', q, page)
 
-  let url = `${GIPHY_API_BASE}/trending?api_key=${GIPHY_API_KEY}&limit=25&rating=g`
-  if (ctx.query && Object.keys(ctx.query).length) {
-    const { q, page } = req.query
-    url = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${
-      page ?? 0
-    }&limit=20&rating=g&lang=en`
-  }
-  const fetchResponse = await fetch(url)
+  const fetchResponse = await fetch(q ? trendingUrl : searchUrl)
   const gifs = await fetchResponse.json()
   return { gifs: normalizeGiphyResponse(gifs) }
 }

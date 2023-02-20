@@ -2,13 +2,12 @@ import { SearchHistory, PreviousSearches, PreviousSearchesText } from './styles'
 import { GifContext } from '@/providers'
 
 const SearchHistoryComponent = () => {
-  const { searchHistory, fetchWithQuery } = GifContext.useContainer()
+  const { searchHistory, fetchGifs } = GifContext.useContainer()
 
   const historyClickHandler = ({ currentTarget }) => {
-    fetchWithQuery({ query: currentTarget.innerText })
+    fetchGifs({ query: currentTarget.innerText })
   }
 
-  // TODO BUG: there's a bug where immediately-viewed histories disappear from the list
   return (
     <SearchHistory>
       <PreviousSearchesText>
@@ -20,7 +19,7 @@ const SearchHistoryComponent = () => {
           .map((prevSearch, index) => (
             <div key={`${index}-${prevSearch}`}>
               <span onClick={historyClickHandler}>{prevSearch}</span>
-              {index !== searchHistory.length - 1 && <span>{', '}</span>}
+              {index !== searchHistory?.length - 1 && <span>{', '}</span>}
             </div>
           ))}
       </PreviousSearches>

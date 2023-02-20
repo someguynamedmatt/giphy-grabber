@@ -10,27 +10,34 @@ const useGifs = (initialState = []) => {
   const [gifs, setGifs] = useState(initialState)
   const [searchTerm, setSearchTerm] = useState()
   const [page, setPage] = useState(1)
-  const searchHistory = useRef([])
+  const [searchHistory, setSearchHistory] = useState([])
 
   useEffect(() => {
     const fromLS = getFromLocalStorage(HISTORY_KEY)
-    searchHistory.current = Array.from(new Set([...(Array.isArray(fromLS) ? fromLS : [fromLS])]))
-    /* searchHistory.current = Array.from(
-     *   new Set([query, ...(Array.isArray(previousHistory) ? previousHistory : [previousHistory])])
-     * ) */
-  }, [])
+    setSearchHistory(Array.from(new Set([...(Array.isArray(fromLS) ? fromLS : [fromLS])])))
+  }, [searchHistory.length])
 
-  /* useEffect(() => {
-   *   let previousHistory = getFromLocalStorage(HISTORY_KEY) ?? []
-   *   setInLocalStorage(HISTORY_KEY, Array.from(new Set([...previousHistory, searchTerm])))
-   * }, [searchHistory.current.length])
-   */
-  const fetchGifs = async ({ query } = { query: null }) => {
-    const res = await fetch(query ? `/api/gifs?q=${query}&page=${page}` : `/api/gifs?page=${page}`)
+  const determineNextState =
+    (reset = false, newData) =>
+    (state = []) => {
+      if (reset) return []
+      return state?.concat(newData)
+    }
+
+  const fetchGifs = async ({ query, pageReset } = { query: null, pageReset: false }) => {
+    // If the query does not equal the search term, we assume this is a new search
+    // which should see new pages (starting from 1).
+    /* setPage(searchTerm !== query && 1) */
+    const pageNumber = pageReset ? 1 : page + 1
+    const res = await fetch(
+      query ? `/api/gifs?q=${query}&page=${pageNumber}` : `/api/gifs?page=${pageNumber}`
+    )
     const data = await res.json()
-    setGifs(data)
+    setGifs(determineNextState(pageReset, data))
     setSearchTerm(query)
-    setPage(page + 1)
+    setPage(pageNumber)
+
+    debugger
     return data
   }
 
@@ -38,7 +45,6 @@ const useGifs = (initialState = []) => {
   const setHistory = query => {
     if (!query) return
     let previousHistory = getFromLocalStorage(HISTORY_KEY) ?? []
-    console.log('prev', previousHistory)
     searchHistory.current = Array.from(
       new Set([query, ...(Array.isArray(previousHistory) ? previousHistory : [previousHistory])])
     )
@@ -50,9 +56,8 @@ const useGifs = (initialState = []) => {
     fetchGifs,
     gifs,
     page,
-    searchHistory: searchHistory.current,
+    searchHistory: searchHistory,
     searchTerm,
-    setGifs,
     setSearchTerm,
     setHistory,
   }

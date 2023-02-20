@@ -14,7 +14,7 @@ const SearchBar = () => {
   const [inputValue, setInputValue] = useState(undefined)
   const [debouncedValue, setDebouncedValue] = useState('')
   const [data, setData] = useState(null)
-  const { fetchGifs, fetchWithQuery, setGifs, setHistory } = GifContext.useContainer()
+  const { fetchGifs, setHistory } = GifContext.useContainer()
 
   // useDebounce(() => setDebouncedValue(inputValue), DEBOUNCE_MS, [inputValue])
 
@@ -24,21 +24,16 @@ const SearchBar = () => {
 
   const searchClickHandler = () => {
     setHistory(inputValue)
-    fetchGifs({ query: inputValue })
+    fetchGifs({ query: inputValue, pageReset: true })
   }
 
   const onKeydown = event => {
     if (event.code === 'Enter' || event.code === 'NumpadEnter') {
       event.preventDefault()
-      console.log('FETCHING WITH QUERY', inputValue)
       setHistory(inputValue)
-      fetchGifs({ query: inputValue })
+      fetchGifs({ query: inputValue, pageReset: true })
     }
   }
-
-  useEffect(() => {
-    fetchGifs()
-  }, [])
 
   return (
     <Search data-testid={testId}>

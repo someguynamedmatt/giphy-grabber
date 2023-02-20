@@ -8,14 +8,10 @@ export const usePersistence = () => {
   const setInLocalStorage = (key, val) => {
     if (!isLocalStorageDefined) return
     const current = getFromLocalStorage(key)
-    console.log({ current, val })
+    current.push(val)
+    const jsonArray = JSON.stringify(current)
     try {
-      window.localStorage.setItem(
-        key,
-        ...(Array.isArray(current)
-          ? current.push(JSON.stringify(val))
-          : [current, JSON.stringify(val)])
-      )
+      window.localStorage.setItem(key, jsonArray)
     } catch (err) {
       console.error(`[ERROR]: could not set val: ${val} with key: ${key} in localStorage`, err)
     }
@@ -37,7 +33,7 @@ export const usePersistence = () => {
     }
     let val = null
     try {
-      val = JSON.parse(window.localStorage.getItem(key))
+      val = JSON.parse(window.localStorage.getItem(key)) ?? []
     } catch (err) {
       console.error(`[ERROR]: could not parse value from localStorage with key ${key}`)
     }
