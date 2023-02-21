@@ -14,6 +14,7 @@ const GifComponent = ({ gif }) => {
         height={height}
         width={width}
         alt={url}
+        unoptimized={true}
       />
     </GifWrapper>
   )
