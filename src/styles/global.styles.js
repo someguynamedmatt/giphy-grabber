@@ -25,6 +25,9 @@ main {
   margin: 0 auto;
   max-width: 1280px;
   padding: 0 120px;
+  @media screen and (max-width: 673px) {
+      padding: 0 10px;
+  }
 }
 
 `

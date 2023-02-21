@@ -26,7 +26,7 @@ export const Grid = styled.div`
   }
 
   @media screen and (max-width: 673px) {
-    grid-template-columns: repeat(1, minmax(200px, 1fr));
+    grid-template-columns: repeat(1, minmax(283px, 1fr));
   }
 `
 
