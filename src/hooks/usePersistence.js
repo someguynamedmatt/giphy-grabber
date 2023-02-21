@@ -15,15 +15,6 @@ export const usePersistence = () => {
     }
   }
 
-  const setInSessionStorage = (key, val) => {
-    if (!isSessionStorageDefined) return
-    try {
-      window.sessionStorage.setItem(key, JSON.stringify(val))
-    } catch (err) {
-      console.error(`[ERROR]: could not set val: ${val} with key: ${key} in sessionStorage`, err)
-    }
-  }
-
   const getFromLocalStorage = key => {
     if (!isLocalStorageDefined) {
       console.warn(`[WARN]: localStorage is undefined`)
@@ -38,24 +29,8 @@ export const usePersistence = () => {
     return val
   }
 
-  const getFromSessionStorage = key => {
-    if (!isSessionStorageDefined) {
-      console.warn(`[WARN]: sessionStorage is undefined`)
-      return null
-    }
-    let val = null
-    try {
-      val = JSON.parse(window.sessionStorage.getItem(key))
-    } catch (err) {
-      console.error(`[ERROR]: could not parse value from sessionStorage with key ${key}`)
-    }
-    return val
-  }
-
   return {
     setInLocalStorage,
-    setInSessionStorage,
     getFromLocalStorage,
-    getFromSessionStorage,
   }
 }
