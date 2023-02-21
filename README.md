@@ -22,7 +22,7 @@ I chose Next.js for this project because it was (in my opinion) a quick way to s
 1. Obscure the interface to the 3rd-party API (i.e. Giphy's API)
 1. Performance benefits of the page's initial load
 
-For point #2, above, this gives a little more breathing room in the future should this hypothetical application want to switch to a different Gif provider. The client-side React, in this case, doesn't need to t concern itself with the particularities of Giphy's API, only the particularities of the custom Next API routes (e.g. `/api/gifs`).
+For point #2, above, this gives a little more breathing room in the future should this hypothetical application want to switch to a different Gif provider. The client-side React, in this case, doesn't need to to concern itself with the particularities of Giphy's API, only the particularities of the custom Next API routes (e.g. `/api/gifs`). If (hypotehtically) one wanted to switch to a different provider, they would only need to switch out the API urls (in the constants file) and write a custom mapping function similar to `normalizeGiphyResponse` does here.
 
 For point #3, it's acknowledged that this application is very straightforward and the performance benefits might be negligible, however by initially architecting it out in this way there is much more room for growth. I didn't have time to gather metrics on this current implementation v. a standard, "client side only" application, but subjectively it "feels fast".
 

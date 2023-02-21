@@ -4,7 +4,7 @@ import { GifGrid, Header, SearchBar, SearchHistory, ResultsCallout } from '@/com
 import { GlobalStyles, theme } from '@/styles/global.styles'
 import { GifContext } from '@/providers'
 import { normalizeGiphyResponse } from '@/utils'
-import { GIPHY_API_BASE, GIPHY_API_KEY } from '@/constants'
+import { giphySearchUrl, giphyTrendingUrl } from '@/constants'
 
 const GiphyHead = () => (
   <Head>
@@ -36,10 +36,7 @@ export default function Home({ gifs }) {
 
 Home.getInitialProps = async ctx => {
   const { q, page } = ctx.req.query ?? {}
-  const trendingUrl = `${GIPHY_API_BASE}/trending?api_key=${GIPHY_API_KEY}&limit=25&rating=pg-13&offset=${page}`
-  const searchUrl = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${page}&limit=20&rating=pg-13&lang=en`
-
-  const fetchResponse = await fetch(q ? trendingUrl : searchUrl, { cache: 'no-store' })
+  const fetchResponse = await fetch(q ? giphySearchUrl(q, page) : giphyTrendingUrl(page))
   const gifs = await fetchResponse.json()
   return { gifs: normalizeGiphyResponse(gifs) }
 }
