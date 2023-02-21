@@ -1,8 +1,7 @@
-import { useId, useRef, useEffect, useState } from 'react'
+import { useId, useRef, useEffect, useState, useCallback } from 'react'
 import { InfiniteScroll as ScrollFlag, Grid, GridWrapper } from './styles'
 import { Gif } from '@/components'
 import { GifContext } from '@/providers'
-import { useGridResizer } from '@/hooks'
 import { useIntersection } from 'react-use'
 
 export const testId = 'grid-instance'
@@ -10,7 +9,6 @@ export const testId = 'grid-instance'
 const GifGrid = () => {
   const { window } = globalThis
   const { gifs, fetchGifs, searchTerm } = GifContext.useContainer()
-  const { resizeAllGridItems } = useGridResizer()
   const uuid = useId()
   const flag = useRef(null)
   const [fetchMore, setFetchMore] = useState(false)
@@ -20,13 +18,31 @@ const GifGrid = () => {
     threshold: 0,
   })
 
+  const resizeGridItem = ({ item, rowGap, rowHeight }) => {
+    const gridItemRect = item.querySelector('.grid-item').getBoundingClientRect()
+    const rowSpan = Math.ceil((gridItemRect.height + rowGap) / (rowHeight + rowGap))
+    item.style.gridRowEnd = `span ${rowSpan > 1 ? rowSpan : Math.ceil(gridItemRect.bottom)}`
+    return Math.ceil(gridItemRect.bottom)
+  }
+
+  const resizeAllGridItems = useCallback(() => {
+    const grid = document?.getElementsByClassName('grid')[0]
+    const allItems = document?.getElementsByClassName('grid-item-wrapper')
+    const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('row-gap'))
+    const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'))
+
+    for (let i = 0; i < allItems.length; i++) {
+      resizeGridItem({ item: allItems[i], rowGap, rowHeight })
+    }
+  }, [])
+
   useEffect(() => {
     if (fetchMore) {
       fetchGifs({ query: searchTerm }).then(() => {
         setFetchMore(false)
       })
     }
-  }, [fetchMore])
+  }, [fetchMore, fetchGifs, searchTerm])
 
   useEffect(() => {
     const intersectionCb = () => {
