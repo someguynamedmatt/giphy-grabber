@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <HeaderBody data-testid={testId}>
       <Image alt={altText} src={iconSrc} height={29} width={25} />
-      <span>{giphyGrabber}</span>
+      <div>{giphyGrabber}</div>
     </HeaderBody>
   )
 }
