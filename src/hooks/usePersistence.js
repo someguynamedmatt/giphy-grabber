@@ -1,7 +1,6 @@
 export const usePersistence = () => {
   const isWindowDefined = Boolean(globalThis?.window)
   const isLocalStorageDefined = Boolean(isWindowDefined && window.localStorage)
-  const isSessionStorageDefined = Boolean(isWindowDefined && window.sessionStorage)
 
   const setInLocalStorage = (key, val) => {
     if (!isLocalStorageDefined) return
