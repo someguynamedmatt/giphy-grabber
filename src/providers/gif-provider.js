@@ -15,7 +15,7 @@ const useGifs = (initialState = []) => {
   useEffect(() => {
     const fromLS = getFromLocalStorage(HISTORY_KEY)
     setSearchHistory(Array.from(new Set([...(Array.isArray(fromLS) ? fromLS : [fromLS])])))
-  }, [getFromLocalStorage])
+  }, [])
 
   const fetchGifs = async ({ query, pageReset } = { query: null, pageReset: false }) => {
     setIsLoading(true)
@@ -48,7 +48,6 @@ const useGifs = (initialState = []) => {
   return {
     fetchGifs,
     gifs,
-    loading,
     page,
     searchHistory,
     searchTerm,

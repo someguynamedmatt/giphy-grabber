@@ -5,7 +5,7 @@ export const testId = 'gif-instance'
 
 const GifComponent = ({ gif }) => {
   const { height, width, url } = gif.images['fixed_width']
-  const [loaded, setIsLoaded] = useState(null)
+  const [loaded, setIsLoaded] = useState(false)
   const imgRef = useRef(null)
   const uuid = useId()
 

@@ -26,7 +26,7 @@ const GifGrid = () => {
         setFetchMore(false)
       })
     }
-  }, [fetchMore, fetchGifs, searchTerm])
+  }, [fetchMore])
 
   useEffect(() => {
     const intersectionCb = () => {
