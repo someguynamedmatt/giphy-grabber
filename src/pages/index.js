@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { ThemeProvider } from 'styled-components'
 import { GifGrid, Header, SearchBar, SearchHistory, ResultsCallout } from '@/components'
 import { GlobalStyles, theme } from '@/styles/global.styles'
@@ -7,7 +6,6 @@ import { GifContext } from '@/providers'
 import { normalizeGiphyResponse } from '@/utils'
 import { GIPHY_API_BASE, GIPHY_API_KEY } from '@/constants'
 
-// TODO move?
 const GiphyHead = () => (
   <Head>
     <title>GIPHY GRABBER</title>
@@ -38,13 +36,10 @@ export default function Home({ gifs }) {
 
 Home.getInitialProps = async ctx => {
   const { q, page } = ctx.req.query ?? {}
-  const trendingUrl = `${GIPHY_API_BASE}/trending?api_key=${GIPHY_API_KEY}&limit=25&rating=g`
-  const searchUrl = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${
-    page || 1
-  }&limit=20&rating=g&lang=en`
-  console.log('\n****GIP****\n\n', q, page)
+  const trendingUrl = `${GIPHY_API_BASE}/trending?api_key=${GIPHY_API_KEY}&limit=25&rating=pg-13&offset=${page}`
+  const searchUrl = `${GIPHY_API_BASE}/search?api_key=${GIPHY_API_KEY}&q=${q}&offset=${page}&limit=20&rating=pg-13&lang=en`
 
-  const fetchResponse = await fetch(q ? trendingUrl : searchUrl)
+  const fetchResponse = await fetch(q ? trendingUrl : searchUrl, { cache: 'no-store' })
   const gifs = await fetchResponse.json()
   return { gifs: normalizeGiphyResponse(gifs) }
 }

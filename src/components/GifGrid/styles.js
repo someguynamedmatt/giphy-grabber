@@ -32,5 +32,5 @@ export const Grid = styled.div`
 
 export const InfiniteScroll = styled.div`
   width: 100%;
-  height: 1px;
+  height: 100px;
 `

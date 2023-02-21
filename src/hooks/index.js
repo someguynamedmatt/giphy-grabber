@@ -1,2 +1,2 @@
-export * from './useGiphyApi'
 export * from './usePersistence'
+export * from './useGridResizer'

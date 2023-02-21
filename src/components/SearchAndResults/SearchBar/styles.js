@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { styles } from '@/styles/global.styles'
 
 export const Search = styled.div`
   cursor: pointer;

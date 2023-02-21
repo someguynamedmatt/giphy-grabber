@@ -1,7 +1,5 @@
-import { useEffect } from 'react'
-
 export const usePersistence = () => {
-  const isWindowDefined = Boolean(globalThis.window)
+  const isWindowDefined = Boolean(globalThis?.window)
   const isLocalStorageDefined = Boolean(isWindowDefined && window.localStorage)
   const isSessionStorageDefined = Boolean(isWindowDefined && window.sessionStorage)
 

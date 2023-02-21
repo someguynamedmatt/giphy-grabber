@@ -5,9 +5,11 @@ const SearchHistoryComponent = () => {
   const { searchHistory, fetchGifs } = GifContext.useContainer()
 
   const historyClickHandler = ({ currentTarget }) => {
-    fetchGifs({ query: currentTarget.innerText })
+    fetchGifs({ query: currentTarget.innerText, pageReset: true })
   }
 
+
+  const reversedHistory = searchHistory.reverse()
   return (
     <SearchHistory>
       <PreviousSearchesText>
@@ -15,7 +17,7 @@ const SearchHistoryComponent = () => {
         <span>Searches:</span>
       </PreviousSearchesText>
       <PreviousSearches>
-        {searchHistory
+        {reversedHistory
           .map((prevSearch, index) => (
             <div key={`${index}-${prevSearch}`}>
               <span onClick={historyClickHandler}>{prevSearch}</span>
