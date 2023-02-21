@@ -1,4 +1,4 @@
-import { useId, useRef, useEffect, useCallback, useState } from 'react'
+import { useId, useRef, useEffect, useState } from 'react'
 import { InfiniteScroll as ScrollFlag, Grid, GridWrapper } from './styles'
 import { Gif } from '@/components'
 import { GifContext } from '@/providers'
@@ -6,7 +6,7 @@ import { useGridResizer } from '@/hooks'
 import { useIntersection } from 'react-use'
 
 const GifGrid = () => {
-  const { window, document } = globalThis
+  const { window } = globalThis
   const { gifs, fetchGifs, searchTerm } = GifContext.useContainer()
   const { resizeAllGridItems } = useGridResizer()
   const uuid = useId()
