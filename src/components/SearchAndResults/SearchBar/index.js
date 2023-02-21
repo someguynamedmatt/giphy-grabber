@@ -9,8 +9,6 @@ const SearchBar = () => {
   const [inputValue, setInputValue] = useState(undefined)
   const { fetchGifs, setHistory } = GifContext.useContainer()
 
-  // useDebounce(() => setDebouncedValue(inputValue), DEBOUNCE_MS, [inputValue])
-
   const onChange = ({ target: { value } }) => {
     setInputValue(value)
   }
