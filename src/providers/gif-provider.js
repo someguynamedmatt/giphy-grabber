@@ -9,7 +9,6 @@ const useGifs = (initialState = []) => {
   const [gifs, setGifs] = useState(initialState)
   const [searchTerm, setSearchTerm] = useState()
   const [page, setPage] = useState(1)
-  const [loading, setIsLoading] = useState(false)
   const [searchHistory, setSearchHistory] = useState([])
 
   useEffect(() => {
@@ -18,7 +17,6 @@ const useGifs = (initialState = []) => {
   }, [])
 
   const fetchGifs = async ({ query, pageReset } = { query: null, pageReset: false }) => {
-    setIsLoading(true)
     const pageNumber = pageReset ? 1 : page + 1
     const res = await fetch(
       query ? `/api/gifs?q=${query}&page=${pageNumber}` : `/api/gifs?page=${pageNumber}`
@@ -30,7 +28,6 @@ const useGifs = (initialState = []) => {
     })
     setSearchTerm(query)
     setPage(pageNumber)
-    setIsLoading(false)
   }
 
   const setHistory = query => {
