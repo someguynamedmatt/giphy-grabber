@@ -1,5 +1,5 @@
 import { normalizeGiphyResponse } from '@/utils'
-import { giphySearchUrl, giphyTrendingUrl } from '@/constants'
+import { GIPHY_API_KEY, giphySearchUrl, giphyTrendingUrl } from '@/constants'
 
 export default async function handler(req, res) {
   if (!GIPHY_API_KEY) return res.status(500).json({ error: 'configuration error' })
