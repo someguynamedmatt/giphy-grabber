@@ -33,7 +33,7 @@ For point #3, it's acknowledged that this application is very straightforward an
 For the styling of this project, I chose to go with `styled-components` due to familiarity, but also because I personally appreciate the readability of my styled components (e.g. `<Gif />`). This is hardly a fully-sold product for me. I've anecdotally noticed the JavaScript execution for `styled-component`s tends to bog-down the network traffic on initial hydration, so I'm unsure of the weighting of the pros/cons. In all honesty, this decision was mostly made due to familiarity.
 
 ### Bonus Points
-- `Previous Searches` are stored to local-storage
+- `Previous Searches` are stored to local-storage and viewable by clicking on them (they're links)
 
 ### Things I would have liked to use or done differently
 
