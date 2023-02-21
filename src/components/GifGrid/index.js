@@ -5,6 +5,8 @@ import { GifContext } from '@/providers'
 import { useGridResizer } from '@/hooks'
 import { useIntersection } from 'react-use'
 
+export const testId = 'grid-instance'
+
 const GifGrid = () => {
   const { window } = globalThis
   const { gifs, fetchGifs, searchTerm } = GifContext.useContainer()
@@ -15,7 +17,7 @@ const GifGrid = () => {
   const intersection = useIntersection(flag, {
     root: null,
     rootMargin: '0px',
-    threshold: 1.0,
+    threshold: 0,
   })
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const GifGrid = () => {
 
   useEffect(() => {
     const intersectionCb = () => {
-      if (intersection?.intersectionRatio >= 1 && !fetchMore) {
+      if (intersection?.intersectionRatio > 0 && !fetchMore) {
         setFetchMore(true)
       }
     }
@@ -50,14 +52,15 @@ const GifGrid = () => {
   return (
     <>
       <GridWrapper className='grid-wrapper'>
-        <Grid className='grid'>
-          {gifs?.map((g, i) => (
-            <Gif key={`${uuid}-${g.id}-${i}`} gif={g} />
-          ))}
-        </Grid>
-        <ScrollFlag ref={flag} />
+        <>
+          <Grid className='grid' data-testid={testId}>
+            {gifs?.map((g, i) => (
+              <Gif key={`${uuid}-${g.id}-${i}`} gif={g} />
+            ))}
+          </Grid>
+          <ScrollFlag ref={flag} />
+        </>
       </GridWrapper>
-      <div style={{ width: '100%', height: '100px' }} />
     </>
   )
 }

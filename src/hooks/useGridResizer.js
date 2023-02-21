@@ -17,7 +17,7 @@ export const useGridResizer = () => {
     for (let i = 0; i < allItems.length; i++) {
       resizeGridItem({ item: allItems[i], rowGap, rowHeight })
     }
-  }, [globalThis?.document, globalThis?.window])
+  }, [])
 
   return { resizeAllGridItems }
 }

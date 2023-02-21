@@ -1,13 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { giphyTrendingResponse } from '../../../fixtures'
-import Gif from '../'
+import Gif, { testId } from '../'
 
 const mockGif = {
   ...giphyTrendingResponse.data[0],
 }
 
-const testId = 'gif-instance'
+jest.mock('@/providers', () => ({
+  GifContext: {
+    useContainer: () => ({
+      loading: false,
+    }),
+  },
+}))
 
 describe('components::Gif', () => {
   test('it renders as expected', () => {
